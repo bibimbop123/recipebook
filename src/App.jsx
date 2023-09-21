@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { REACT_APP_ID, REACT_APP_KEY } from "../server/server";
 
 function App() {
   const [recipes, setRecipes] = useState([]);
@@ -9,11 +8,11 @@ function App() {
 
   async function getRecipes() {
     try {
-      const response = await axios.get(
-        `https://api.edamam.com/search?q=${query}&app_id=${REACT_APP_ID}&app_key=${REACT_APP_KEY}`
-      );
+      const response = await axios.post("/api/recipes", { query });
+      console.log(response);
       console.log(response.data.hits);
-      setRecipes(response.data.hits);
+      setRecipes(response.data.hits); // Set recipes to the hits array
+      console.log("recipes", recipes);
     } catch (error) {
       console.error("Error fetching recipes:", error);
     }
