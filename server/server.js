@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import App from "../src/App.jsx";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const app = express();
 const PORT = 8080;
 
 app.use(express.json());
+app.use("/api", App);
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "..", "dist")));
