@@ -8,7 +8,7 @@ dotenv.config(); // Load environment variables
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 8000, // Specify the port you want to use
+    port: 3000, // Specify the port you want to use
     open: true, // Automatically open the browser
   },
   build: {

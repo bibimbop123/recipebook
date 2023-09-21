@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import "./App.css";
 import axios from "axios";
-import { API_ID } from "../server";
-import { API_KEY } from "../server";
+import { REACT_APP_ID, REACT_APP_KEY } from "../server/server";
 
 function App() {
   const [recipes, setRecipes] = useState([]);
@@ -12,7 +10,7 @@ function App() {
   async function getRecipes() {
     try {
       const response = await axios.get(
-        `https://api.edamam.com/search?q=${query}&app_id=${API_ID}&app_key=${API_KEY}`
+        `https://api.edamam.com/search?q=${query}&app_id=${REACT_APP_ID}&app_key=${REACT_APP_KEY}`
       );
       console.log(response.data.hits);
       setRecipes(response.data.hits);
@@ -31,6 +29,7 @@ function App() {
 
   const getSearch = (e) => {
     e.preventDefault();
+    console.log("searched");
     setQuery(search);
     setSearch("");
   };
