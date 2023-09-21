@@ -20,7 +20,7 @@ function App() {
 
   useEffect(() => {
     getRecipes();
-  }, [query]);
+  }, []);
 
   const updateSearch = (e) => {
     setSearch(e.target.value);
