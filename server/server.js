@@ -5,8 +5,8 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 
-const main = fileURLToPath(import.meta.url);
-const parentfile = path.dirname(main);
+const __filename = fileURLToPath(import.meta.url);
+const parentfile = path.dirname(__filename);
 
 const app = express();
 const PORT = 3000;
