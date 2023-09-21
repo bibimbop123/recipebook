@@ -2,13 +2,14 @@
 // Path: server.js
 const express = require("express");
 const path = require("path");
+const main = require("./dist/server/main");
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.static(path.join(main, "dist")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
+  res.sendFile(path.join(main, "dist", "index.html"));
 });
 
 const port = process.env.PORT || 8000;
