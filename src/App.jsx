@@ -10,8 +10,8 @@ function App() {
     try {
       const response = await axios.post("/api/recipes", { query });
       console.log("response", response);
-      console.log("response.data.hits", response.data.hits);
-      setRecipes(response.data.hits); // Set recipes to the hits array
+      console.log("response.data", response.data);
+      setRecipes(response.data); // Set recipes to the hits array
       console.log("recipes", recipes);
     } catch (error) {
       console.error("Error fetching recipes:", error);
