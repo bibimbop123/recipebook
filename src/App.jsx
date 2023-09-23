@@ -1,4 +1,7 @@
 import { useState } from "react";
+import "./App.css";
+import chef from "./assets/chef.gif";
+
 function App() {
   const [recipes, setRecipes] = useState([]);
   // const [search, setSearch] = useState("");
@@ -21,6 +24,9 @@ function App() {
 
   return (
     <div className="App">
+      <h1>Brian's Recipe Book </h1>
+      <img src={chef} alt="chef" />
+      <p>Search for recipes by ingredient</p>
       <input
         className="search-bar"
         type="text"
@@ -38,7 +44,11 @@ function App() {
       </button>
       <div className="recipes">
         {recipes.map((recipe) => (
-          <h1 key={recipe.recipe.label}>{recipe.recipe.label}</h1>
+          <div className="recipe">
+            <h2>{recipe.recipe.label}</h2>
+            <p>Calories: {recipe.recipe.calories}</p>
+            <img src={recipe.recipe.image} alt={recipe.recipe.label} />
+          </div>
         ))}
       </div>
     </div>
