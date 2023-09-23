@@ -1,51 +1,41 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-
+import { useState } from "react";
 function App() {
   const [recipes, setRecipes] = useState([]);
-  const [search, setSearch] = useState("");
-  const [query, setQuery] = useState("chicken");
+  // const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
+  console.log({
+    recipes,
+    query,
+  });
 
   async function getRecipes() {
-    try {
-      const response = await axios.post("/api/recipes", { query });
-      console.log("response", response);
-      console.log("response.data", response.data);
-      setRecipes(response.data); // Set recipes to the hits array
-      console.log("recipes", recipes);
-    } catch (error) {
-      console.error("Error fetching recipes:", error);
-    }
+    const response = await fetch(
+      `https://api.edamam.com/search?q=${query}&app_id=${
+        import.meta.env.VITE_REACT_APP_ID
+      }&app_key=${import.meta.env.VITE_REACT_APP_KEY}`
+    );
+    const { hits } = await response.json();
+
+    setRecipes(hits);
   }
-
-  useEffect(() => {
-    getRecipes();
-  }, []);
-
-  const updateSearch = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const getSearch = (e) => {
-    e.preventDefault();
-    console.log("searched");
-    setQuery(search);
-    setSearch("");
-  };
 
   return (
     <div className="App">
-      <form onSubmit={getSearch} className="search-form">
-        <input
-          className="search-bar"
-          type="text"
-          value={search}
-          onChange={updateSearch}
-        />
-        <button className="search-button" type="submit">
-          Search
-        </button>
-      </form>
+      <input
+        className="search-bar"
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <button
+        className="search-button"
+        onClick={() => {
+          getRecipes();
+          setQuery("");
+        }}
+      >
+        Search
+      </button>
       <div className="recipes">
         {recipes.map((recipe) => (
           <h1 key={recipe.recipe.label}>{recipe.recipe.label}</h1>
