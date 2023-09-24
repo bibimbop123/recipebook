@@ -71,7 +71,7 @@ export default function App() {
         Search
       </button>
       <br />
-      <h3> Free recipe sources not behind a paywall</h3>
+      <h3> There are many free recipe sources not behind a paywall</h3>
       <br />
       <h4> BBC Good Food, Bon Appetit, All Recipes, Food Network, and more!</h4>
 
