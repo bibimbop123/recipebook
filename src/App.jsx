@@ -26,8 +26,12 @@ function App() {
 
   return (
     <div className="App">
+      <br />
       <h1>Brian's Recipe Book </h1>
+      <br />
       <img className="chef" src={chef} alt="chef" />
+      <br />
+      <br />
       <p>Search for recipes by ingredient</p>
       <input
         className="search-bar"
@@ -35,6 +39,7 @@ function App() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
+      <br />
       <button
         className="search-button"
         onClick={() => {
@@ -44,6 +49,7 @@ function App() {
       >
         Search
       </button>
+      <br />
       <div className="recipes">
         <Row xs={1} md={3} className="g-4">
           {recipes &&
