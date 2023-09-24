@@ -73,8 +73,13 @@ function App() {
                     <Card.Text>
                       Source: {recipe.recipe.source} <br />
                     </Card.Text>
+                    <Card.Text>Cuisine: {recipe.recipe.cuisineType}</Card.Text>
+                    <Card.Text>Meal Type: {recipe.recipe.mealType}</Card.Text>
                     <Card.Text>
                       Time: {recipe.recipe.totalTime} minutes
+                    </Card.Text>
+                    <Card.Text>
+                      Servings: {Math.round(recipe.recipe.yield)}
                     </Card.Text>
                     <Card.Text>
                       Calories: {Math.round(recipe.recipe.calories)}
