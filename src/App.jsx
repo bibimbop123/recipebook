@@ -17,7 +17,7 @@ function App() {
     const response = await axios.post(
       `https://api.edamam.com/search?q=${query}&app_id=${(import.meta.env.VITE_REACT_APP_ID =
         "d7584277")}&app_key=${(import.meta.env.VITE_REACT_APP_KEY =
-        "4389e6c366bbdf3cc67ae920c653110e")}`
+        "4389e6c366bbdf3cc67ae920c653110e")}&from=0&to=12`
     );
     const { hits } = await response.data;
 
