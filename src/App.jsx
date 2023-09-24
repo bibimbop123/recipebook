@@ -55,6 +55,12 @@ function App() {
         Search
       </button>
       <br />
+      <h3> Free recipe sources not behind a paywall</h3>
+      <br />
+      <h4> BBC Good Food, Bon Appetit, All Recipes, Food Network, and more!</h4>
+
+      <h6>Privacy: A few sources require payment for access.</h6>
+      <br />
       <div className="recipes">
         <Row>
           {recipes &&
@@ -66,6 +72,9 @@ function App() {
                     <Card.Title>{recipe.recipe.label}</Card.Title>
                     <Card.Text>
                       Source: {recipe.recipe.source} <br />
+                    </Card.Text>
+                    <Card.Text>
+                      Time: {recipe.recipe.totalTime} minutes
                     </Card.Text>
                     <Card.Text>
                       Calories: {Math.round(recipe.recipe.calories)}
