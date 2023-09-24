@@ -3,26 +3,42 @@ import "./App.css";
 import chef from "./assets/chef.gif";
 import axios from "axios";
 import { Card, Row, Col } from "react-bootstrap";
+import ReactPaginate from "react-paginate";
 
-function App() {
+export default function App() {
   const [recipes, setRecipes] = useState([]);
   // const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [perPage] = useState(4);
   console.log({
     recipes,
     query,
   });
 
   async function getRecipes() {
-    const response = await axios.post(
-      `https://api.edamam.com/search?q=${query}&app_id=${(import.meta.env.VITE_REACT_APP_ID =
-        "d7584277")}&app_key=${(import.meta.env.VITE_REACT_APP_KEY =
-        "4389e6c366bbdf3cc67ae920c653110e")}&from=0&to=12`
-    );
-    const { hits } = await response.data;
+    try {
+      const response = await axios.post(
+        `https://api.edamam.com/search?q=${query}&app_id=${(import.meta.env.VITE_REACT_APP_ID =
+          "d7584277")}&app_key=${(import.meta.env.VITE_REACT_APP_KEY =
+          "4389e6c366bbdf3cc67ae920c653110e")}&from=${
+          currentPage * perPage
+        }&to=${(currentPage + 1) * perPage}`
+      );
+      const { hits } = await response.data;
 
-    setRecipes(hits);
+      setRecipes(hits);
+      setCurrentPage(0);
+    } catch (error) {
+      console.log("Error fetching recipes:", error);
+    }
   }
+  const handlePageClick = (selected) => {
+    setCurrentPage(selected);
+  };
+
+  const offset = currentPage * perPage;
+  const paginatedData = recipes.slice(offset, offset + perPage);
 
   return (
     <div className="App">
@@ -64,7 +80,7 @@ function App() {
       <div className="recipes">
         <Row>
           {recipes &&
-            recipes.map((recipe, index) => (
+            paginatedData.map((recipe, index) => (
               <Col key={index} xs={12} sm={6} md={6} lg={3}>
                 <Card className="recipe-card">
                   <Card.Img variant="top" src={recipe.recipe.image} />
@@ -102,8 +118,17 @@ function App() {
             ))}
         </Row>
       </div>
+      <ReactPaginate
+        previousLabel={"Previous"}
+        nextLabel={"Next"}
+        pageCount={Math.ceil(recipes.length / perPage)}
+        onPageChange={handlePageClick}
+        containerClassName={"pagination"}
+        previousLinkClassName={"previousButton"}
+        nextLinkClassName={"nextButton"}
+        disabledClassName={"paginationDisabled"}
+        activeClassName={"paginationActive"}
+      />
     </div>
   );
 }
-
-export default App;
