@@ -1,0 +1,64 @@
+.App {
+    text-align: center;
+    background-color: #7CB518;
+}
+/*place recipes in collumns of whatever fits the screen*/
+.recipe-card {
+    display: inline-block;
+    margin: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .recipe-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .recipe-card img {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px 5px 0 0;
+  }
+  
+  .recipe-card .card-body {
+    padding: 10px;
+  }
+  
+  .recipe-card .card-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .recipe-card .card-text {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .recipe-card a {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    padding: 10px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  }
+  
+  .recipe-card a:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+  }
+
+  @media screen and (max-width: 768px) {
+    .chef {
+        width: 100%;
+        height:auto;
+    }
+  }
