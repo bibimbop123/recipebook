@@ -60,6 +60,12 @@ function App() {
                   <Card.Body>
                     <Card.Title>{recipe.recipe.label}</Card.Title>
                     <Card.Text>
+                      Source: {recipe.recipe.source} <br />
+                    </Card.Text>
+                    <Card.Text>
+                      Calories: {Math.round(recipe.recipe.calories)}
+                    </Card.Text>
+                    <Card.Text>
                       {recipe.recipe.ingredientLines.map((ingredient) => (
                         <li key={ingredient.text}>{ingredient}</li>
                       ))}
