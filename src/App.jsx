@@ -51,10 +51,10 @@ function App() {
       </button>
       <br />
       <div className="recipes">
-        <Row xs={1} md={3} className="g-4">
+        <Row>
           {recipes &&
             recipes.map((recipe, index) => (
-              <Col key={index}>
+              <Col key={index} xs={12} sm={6} md={6} lg={3}>
                 <Card className="recipe-card">
                   <Card.Img variant="top" src={recipe.recipe.image} />
                   <Card.Body>
