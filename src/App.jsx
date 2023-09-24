@@ -29,7 +29,12 @@ function App() {
       <br />
       <h1>Brian's Recipe Book </h1>
       <br />
-      <img className="chef" src={chef} alt="chef" />
+      <img
+        className="chef"
+        src={chef}
+        alt="chef"
+        style={{ animation: "pulse 2s infinite" }}
+      />
       <br />
       <br />
       <p>Search for recipes by ingredient</p>
