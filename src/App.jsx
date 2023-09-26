@@ -5,12 +5,12 @@ import axios from "axios";
 import { Card, Row, Col } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
 
-export default function App(itemsPerPage) {
+export default function App() {
   const [recipes, setRecipes] = useState([]);
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [perPage] = useState(4);
-  const [pageCount, setPageCount] = useState(0);
+  const perPage = 4;
+  const pageCount = 12 / perPage;
   console.log({
     recipes,
     query,
@@ -21,24 +21,24 @@ export default function App(itemsPerPage) {
 
   async function getRecipes() {
     try {
+      const from = currentPage * perPage;
+      const to = from + perPage;
+
       const response = await axios.post(
         `https://api.edamam.com/search?q=${query}&app_id=${(import.meta.env.VITE_REACT_APP_ID =
           "d7584277")}&app_key=${(import.meta.env.VITE_REACT_APP_KEY =
-          "4389e6c366bbdf3cc67ae920c653110e")}&from=${
-          currentPage * perPage
-        }&to=12`
+          "4389e6c366bbdf3cc67ae920c653110e")}&from=${from}&to=${to}`
       );
-      console.log("Response:", response);
-      const { hits, count } = await response.data;
+
+      const { hits } = response.data;
 
       setRecipes(hits);
-      setPageCount(Math.ceil(count / perPage));
     } catch (error) {
       console.log("Error fetching recipes:", error);
     }
   }
+
   function handlePageClick({ selected }) {
-    console.log("Selected page:", selected);
     setCurrentPage(selected);
   }
   return (
@@ -86,24 +86,32 @@ export default function App(itemsPerPage) {
                 <Card className="recipe-card">
                   <Card.Img variant="top" src={recipe.recipe.image} />
                   <Card.Body>
-                    <Card.Title>{recipe.recipe.label}</Card.Title>
-                    <Card.Text>
+                    <Card.Title key={recipe.label}>
+                      {recipe.recipe.label}
+                    </Card.Title>
+                    <Card.Text key={recipe.recipe.source}>
                       Source: {recipe.recipe.source} <br />
                     </Card.Text>
-                    <Card.Text>Cuisine: {recipe.recipe.cuisineType}</Card.Text>
-                    <Card.Text>Meal Type: {recipe.recipe.mealType}</Card.Text>
-                    <Card.Text>
+                    <Card.Text key={recipe.recipe.cuisineType}>
+                      Cuisine: {recipe.recipe.cuisineType}
+                    </Card.Text>
+                    <Card.Text key={recipe.recipe.mealType}>
+                      Meal Type: {recipe.recipe.mealType}
+                    </Card.Text>
+                    <Card.Text key={recipe.recipe.totalTime}>
                       Time: {recipe.recipe.totalTime} minutes
                     </Card.Text>
-                    <Card.Text>
+                    <Card.Text key={recipe.recipe.yield}>
                       Servings: {Math.round(recipe.recipe.yield)}
                     </Card.Text>
-                    <Card.Text>
+                    <Card.Text key={recipe.recipe.calories}>
                       Calories: {Math.round(recipe.recipe.calories)}
                     </Card.Text>
-                    <Card.Text>
-                      {recipe.recipe.ingredientLines.map((ingredient) => (
-                        <li key={ingredient.text}>{ingredient}</li>
+                    <Card.Text key={recipe.recipe.ingredients.foodId}>
+                      {recipe.recipe.ingredients.map((ingredient) => (
+                        <li key={recipe.recipe.ingredients.foodId}>
+                          {ingredient.text}
+                        </li>
                       ))}
                     </Card.Text>
                     <a
@@ -119,17 +127,19 @@ export default function App(itemsPerPage) {
             ))}
         </Row>
       </div>
-      <ReactPaginate
-        previousLabel={"Previous"}
-        nextLabel={"Next"}
-        pageCount={pageCount}
-        onPageChange={handlePageClick}
-        containerClassName={"pagination"}
-        previousLinkClassName={"previousButton"}
-        nextLinkClassName={"nextButton"}
-        disabledClassName={"paginationDisabled"}
-        activeClassName={"paginationActive"}
-      />
+      {recipes && (
+        <ReactPaginate
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
+          pageCount={pageCount}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination"}
+          previousLinkClassName={"previousButton"}
+          nextLinkClassName={"nextButton"}
+          disabledClassName={"paginationDisabled"}
+          activeClassName={"paginationActive"}
+        />
+      )}
     </div>
   );
 }
