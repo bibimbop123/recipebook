@@ -86,3 +86,50 @@ h1 {
       border: 2px solid #F3DE2C;
     }
   }
+
+  .ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #FBB02D;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+  }
+  
+  .prev,
+  .next,
+  li {
+    margin: 0; 
+  }
+  
+  .prev,
+  .next {
+    padding: 14px 16px;
+    cursor: pointer;
+    color: #fff;
+  }
+  
+  .prev:hover,
+  .next:hover {
+    background-color: #D99E00; 
+  }
+  
+  li {
+    padding: 14px 16px;
+  }
+  
+  li a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  li:hover {
+    background-color: #D99E00;
+  }
+  
+
