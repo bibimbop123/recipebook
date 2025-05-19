@@ -24,9 +24,13 @@ export default function App() {
       const from = (currentPage - 1) * perPage;
       const to = from + perPage;
 
-      const response = await axios.get(
-        `/recipes?query=${query}&from=${from}&to=${to}`
-      );
+      const response = await axios.get("http://localhost:8080/api/recipes", {
+        params: {
+          query,
+          from,
+          to,
+        },
+      });
 
       const { data } = response;
 
