@@ -20,7 +20,7 @@
     "react-bootstrap": "^2.8.0",
     "react-dom": "^18.2.0",
     "react-paginate": "^8.2.0",
-    "nodemon": "^2.0.22",
+    "nodemon": "^2.0.22"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
