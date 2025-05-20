@@ -12,11 +12,12 @@ export default defineConfig({
       },
     },
   build: {
-    outDir: "dist",
-    rollupOptions: {
-      input: {
-        main: "./index.html",
-        nested: "./nested/index.html",
+      outDir: "dist",
+      rollupOptions: {
+        input: {
+          main: "./index.html",
+          // Remove nested to fix the error
+        },
       },
     },
   },
