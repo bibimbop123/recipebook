@@ -17,10 +17,8 @@ app.use(cors()); // ✅ Add this line
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, "../../dist")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../dist", "index.html"));
-});
+app.use(express.static(path.join(__dirname, "..", "dist")));
+
 app.use("/api", apiRouter);
 
 app.get("*", (req, res) => {
@@ -47,17 +45,25 @@ app.get("/recipes", async (req, res) => {
   }
 });
 
-app.get("/api/recipes", (req, res) => {
-  const { from, to } = req.query;
-  const allRecipes = []; // assume this is the full list of 12
+app.get("/api/recipes", async (req, res) => {
+  const { query, from, to } = req.query;
 
-  const start = parseInt(from, 10);
-  const end = parseInt(to, 10);
+  try {
+    const response = await fetch(
+      `https://api.edamam.com/search?q=${query}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}&from=${from}&to=${to}`
+    );
 
-  const paginated = allRecipes.slice(start, end);
-  res.json(paginated);
+    if (!response.ok) {
+      return res.status(response.status).json({ error: "Failed to fetch recipes" });
+    }
+
+    const data = await response.json();
+    res.status(200).json(data.hits);
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
-
 
 app.get("/api/recipes/:id", async (req, res) => {
   const { id } = req.params;
