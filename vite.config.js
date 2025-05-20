@@ -1,23 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
     cors: true,
     proxy: {
-        '/api': 'http://localhost:8080',
-      },
+      '/api': 'http://localhost:8080',
     },
+  },
   build: {
-      outDir: "dist",
-      rollupOptions: {
-        input: {
-          main: "./index.html",
-          // Remove nested to fix the error
-        },
+    outDir: "dist",
+    rollupOptions: {
+      input: {
+        main: "./index.html",
       },
     },
   },
@@ -32,6 +29,5 @@ export default defineConfig({
         additionalData: `@import "@/styles/variables.scss";`,
       },
     },
-  }
+  },
 });
-
