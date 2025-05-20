@@ -6,43 +6,47 @@ import { Card, Row, Col } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
 
 export default function App() {
-  const [recipes, setRecipes] = useState([]);
+  const [allRecipes, setAllRecipes] = useState([]);  // store all fetched recipes
   const [query, setQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0); // zero-based for ReactPaginate
   const perPage = 4;
-  const pageCount = 3;
-  console.log({
-    recipes,
-    query,
-  });
+
+  // Calculate total pages dynamically based on number of recipes
+  const pageCount = Math.ceil(allRecipes.length / perPage);
+
   useEffect(() => {
     getRecipes();
-  }, [currentPage]);
+  }, []);
 
   async function getRecipes() {
     try {
-      const from = (currentPage - 1) * perPage;
-      const to = from + perPage;
-
       const response = await axios.get("http://localhost:8080/api/recipes", {
         params: {
           query,
-          from,
-          to,
         },
       });
 
       const { data } = response;
 
-      setRecipes(data);
+      setAllRecipes(data);
+      setCurrentPage(0); // reset to first page on new fetch
     } catch (error) {
       console.log("Error fetching recipes:", error);
     }
   }
 
+  // Slice recipes to show only current page items
+  const offset = currentPage * perPage;
+  const currentRecipes = allRecipes.slice(offset, offset + perPage);
+
   function handlePageClick({ selected }) {
     setCurrentPage(selected);
   }
+
+  function handleSearch() {
+    getRecipes();
+  }
+
   return (
     <div className="App">
       <br />
@@ -64,13 +68,7 @@ export default function App() {
         onChange={(e) => setQuery(e.target.value)}
       />
       <br />
-      <button
-        className="search-button"
-        onClick={() => {
-          getRecipes();
-          setQuery("");
-        }}
-      >
+      <button className="search-button" onClick={handleSearch}>
         Search
       </button>
       <br />
@@ -82,45 +80,27 @@ export default function App() {
       <br />
       <div className="recipes">
         <Row>
-          {recipes &&
-            recipes.map((recipe, index) => (
+          {currentRecipes &&
+            currentRecipes.map((recipe, index) => (
               <Col key={index} xs={12} sm={6} md={6} lg={3}>
                 <Card className="recipe-card">
                   <Card.Img variant="top" src={recipe.recipe.image} />
                   <Card.Body>
-                    <Card.Title key={recipe.label}>
-                      {recipe.recipe.label}
-                    </Card.Title>
-                    <Card.Text key={recipe.recipe.source}>
-                      Source: {recipe.recipe.source} <br />
+                    <Card.Title>{recipe.recipe.label}</Card.Title>
+                    <Card.Text>Source: {recipe.recipe.source} <br /></Card.Text>
+                    <Card.Text>Cuisine: {recipe.recipe.cuisineType}</Card.Text>
+                    <Card.Text>Meal Type: {recipe.recipe.mealType}</Card.Text>
+                    <Card.Text>Time: {recipe.recipe.totalTime} minutes</Card.Text>
+                    <Card.Text>Servings: {Math.round(recipe.recipe.yield)}</Card.Text>
+                    <Card.Text>Calories: {Math.round(recipe.recipe.calories)}</Card.Text>
+                    <Card.Text>
+                      <ul>
+                        {recipe.recipe.ingredients.map((ingredient, idx) => (
+                          <li key={idx}>{ingredient.text}</li>
+                        ))}
+                      </ul>
                     </Card.Text>
-                    <Card.Text key={recipe.recipe.cuisineType}>
-                      Cuisine: {recipe.recipe.cuisineType}
-                    </Card.Text>
-                    <Card.Text key={recipe.recipe.mealType}>
-                      Meal Type: {recipe.recipe.mealType}
-                    </Card.Text>
-                    <Card.Text key={recipe.recipe.totalTime}>
-                      Time: {recipe.recipe.totalTime} minutes
-                    </Card.Text>
-                    <Card.Text key={recipe.recipe.yield}>
-                      Servings: {Math.round(recipe.recipe.yield)}
-                    </Card.Text>
-                    <Card.Text key={recipe.recipe.calories}>
-                      Calories: {Math.round(recipe.recipe.calories)}
-                    </Card.Text>
-                    <Card.Text key={recipe.recipe.ingredients.foodId}>
-                      {recipe.recipe.ingredients.map((ingredient) => (
-                        <li key={recipe.recipe.ingredients.foodId}>
-                          {ingredient.text}
-                        </li>
-                      ))}
-                    </Card.Text>
-                    <a
-                      href={recipe.recipe.url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a href={recipe.recipe.url} target="_blank" rel="noreferrer">
                       View Recipe
                     </a>
                   </Card.Body>
@@ -129,7 +109,8 @@ export default function App() {
             ))}
         </Row>
       </div>
-      {recipes && recipes.length > 0 && (
+
+      {pageCount > 1 && (
         <ReactPaginate
           previousLabel={"Previous"}
           nextLabel={"Next"}
@@ -140,6 +121,7 @@ export default function App() {
           nextLinkClassName={"nextButton"}
           disabledClassName={"paginationDisabled"}
           activeClassName={"paginationActive"}
+          forcePage={currentPage}
         />
       )}
     </div>
