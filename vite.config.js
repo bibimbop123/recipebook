@@ -11,12 +11,12 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "server/api/",
+    outDir: "server/api",
+    emptyOutDir: true,
     rollupOptions: {
       //server.js will be in the same folder as the dist folder
       input: {
-        main: "./src/main.js",
-        server: "./server/api/server.js",
+        main: "./server/api/server.js",
       }, 
     },
   },
