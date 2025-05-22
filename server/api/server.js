@@ -24,27 +24,6 @@ app.use(express.static(clientDistPath));
 // Use your API routes under /api
 app.use("/api", apiRouter);
 
-// If you want a custom /recipes route outside /api (optional)
-// Otherwise, remove this and rely on /api/recipes only
-/*
-app.get("/recipes", async (req, res) => {
-  const { query, from, to } = req.query;
-  try {
-    const response = await fetch(
-      `https://api.edamam.com/search?q=${query}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}&from=${from}&to=${to}`
-    );
-    if (!response.ok) {
-      return res.status(response.status).json({ error: "Failed to fetch recipes" });
-    }
-    const data = await response.json();
-    res.status(200).json(data.hits);
-  } catch (error) {
-    console.error("Error fetching recipes:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-*/
-
 // API route to fetch recipes (used by your frontend)
 app.get("/api/recipes", async (req, res) => {
   const { query, from, to } = req.query;
