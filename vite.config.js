@@ -1,20 +1,30 @@
+// vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
     cors: true,
     proxy: {
-      '/api': 'http://localhost:8080',
+      '/api': 'http://localhost:8080', // This will proxy to your backend
     },
   },
   build: {
-    outDir: "dist", // Ensure this is for frontend only
+    outDir: "dist",
     emptyOutDir: true,
     rollupOptions: {
-      external: ["node-fetch", "url"], // Exclude Node.js modules
+      external: [
+        'fs',
+        'path',
+        'url',          // ✅ Node core module
+        'crypto',
+        'stream',
+        'util',
+        'zlib',
+        'http',
+        'https',
+      ],
     },
   },
   resolve: {
