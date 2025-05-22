@@ -11,21 +11,24 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
-app.use(cors());
+// ✅ CORS config applied correctly (before any routes)
+const corsOptions = {
+  origin: ['https://recipebook-fawn.vercel.app', 'http://localhost:3000'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve frontend static files from root-level dist (outside /server)
-const clientDistPath = path.join(__dirname, "../../dist");
+// ✅ Serve frontend static files
+const clientDistPath = path.resolve(__dirname, "../dist");
 console.log("Serving static files from:", clientDistPath);
 app.use(express.static(clientDistPath));
 
-// Use your API routes under /api
-app.use("/api", apiRouter);
-
-// API route to fetch recipes (used by your frontend)
+// ✅ API route to fetch recipes
 app.get("/api/recipes", async (req, res) => {
   const { query, from, to } = req.query;
   try {
@@ -43,7 +46,7 @@ app.get("/api/recipes", async (req, res) => {
   }
 });
 
-// API route to fetch single recipe by id
+// ✅ API route to fetch single recipe by id
 app.get("/api/recipes/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -61,7 +64,10 @@ app.get("/api/recipes/:id", async (req, res) => {
   }
 });
 
-// Serve index.html for all unmatched routes (React Router support)
+// ✅ Use other API routes under /api
+app.use("/api", apiRouter);
+
+// ✅ Serve index.html for all unmatched routes
 app.get("*", (req, res) => {
   res.sendFile(path.join(clientDistPath, "index.html"));
 });
