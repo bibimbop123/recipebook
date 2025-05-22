@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
-import cors from "cors"; // ✅ Add this line
+import cors from "cors";
 import apiRouter from "./index.js";
 import { fileURLToPath } from "url";
 
@@ -13,14 +13,16 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 8080;
 
-app.use(cors()); // ✅ Add this line
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ✅ Serve static frontend build files (adjust if your dist is in a different folder)
 app.use(express.static(path.join(__dirname, "..", "dist")));
 
 app.use("/api", apiRouter);
 
+// ✅ Fallback to index.html for SPA routing
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "dist", "index.html"));
 });
