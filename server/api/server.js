@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8080;
 
 // ✅ CORS config applied correctly (before any routes)
 const corsOptions = {
-  origin: ['https://recipebook-fawn.vercel.app', 'http://localhost:3000'],
+  origin: ['https://recipebook-fawn.vercel.app', 'http://localhost:8080'],
   credentials: true,
 };
 app.use(cors(corsOptions));
