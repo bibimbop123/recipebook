@@ -14,10 +14,10 @@ export default defineConfig({
     outDir: "server/api",
     emptyOutDir: true,
     rollupOptions: {
-      //server.js will be in the same folder as the dist folder
+      external: ["node-fetch"], // Exclude node-fetch from the frontend build
       input: {
         main: "./server/api/server.js",
-      }, 
+      },
     },
   },
   resolve: {
