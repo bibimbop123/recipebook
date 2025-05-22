@@ -11,13 +11,10 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "server/api",
+    outDir: "dist", // Ensure this is for frontend only
     emptyOutDir: true,
     rollupOptions: {
-      external: ["node-fetch"], // Exclude node-fetch from the frontend build
-      input: {
-        main: "./server/api/server.js",
-      },
+      external: ["node-fetch", "url"], // Exclude Node.js modules
     },
   },
   resolve: {
