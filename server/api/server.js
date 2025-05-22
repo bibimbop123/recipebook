@@ -17,14 +17,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Serve static frontend build files (adjust if your dist is in a different folder)
-app.use(express.static(path.join(__dirname, "..", "dist")));
+// ✅ Serve frontend static files from root-level dist (not inside /server)
+const clientDistPath = path.join(__dirname, "..", "dist");
+app.use(express.static(clientDistPath));
 
 app.use("/api", apiRouter);
 
-// ✅ Fallback to index.html for SPA routing
+// ✅ Serve index.html for all unmatched routes
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "dist", "index.html"));
+  res.sendFile(path.join(clientDistPath, "index.html"));
 });
 
 app.get("/recipes", async (req, res) => {
