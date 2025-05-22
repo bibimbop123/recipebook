@@ -3,6 +3,7 @@ const router = express.Router();
 import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
+import fetch from "node-fetch";
 
 
 router.get("/", async (req, res) => {
