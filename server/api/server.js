@@ -18,7 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve frontend static files from root-level dist (outside /server)
-const clientDistPath = path.join(__dirname, "..", "dist");
+const clientDistPath = path.join(__dirname, "../../dist");
+console.log("Serving static files from:", clientDistPath);
 app.use(express.static(clientDistPath));
 
 // Use your API routes under /api
