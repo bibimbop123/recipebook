@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "concurrently \"nodemon server/api/server.js\" \"vite\"",
     "build": "vite build",
+    "serve":"node server/api/server.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
