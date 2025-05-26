@@ -7,16 +7,11 @@ export default defineConfig({
   server: {
     cors: true,
     proxy: {
-      '/api': 'http://localhost:8080',
+      '/api': 'https://recipebook-1-82qf.onrender.com/',
     },
   },
   build: {
-    outDir: "dist",
-    rollupOptions: {
-      input: {
-        main: "./index.html",
-      },
-    },
+    outDir: "dist", // Added a comma to properly close the object
   },
   resolve: {
     alias: {
