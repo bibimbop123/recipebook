@@ -11,17 +11,17 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "dist", // Added a comma to properly close the object
+    outDir: "dist", // Ensure the build output directory is correct
   },
   resolve: {
     alias: {
-      "@": "/src",
+      "@": "/src", // Alias for cleaner imports
     },
   },
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "@/styles/variables.scss";`,
+        additionalData: `@import "@/styles/variables.scss";`, // SCSS global variables
       },
     },
   },
