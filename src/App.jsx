@@ -20,7 +20,7 @@ export default function App() {
 
   async function getRecipes() {
     try {
-      const response = await axios.get("http://localhost:8080/api/recipes", {
+      const response = await axios.get("https://recipebook-1-82qf.onrender.com/api/recipes", {
         params: {
           query,
         },
