@@ -8,6 +8,14 @@ services:
     envVars:
       - key: VITE_API_URL
         value: $RECIPEBOOK_API_URL
+    httpHeaders:
+      - name: Access-Control-Allow-Origin
+        value: "*"
+      - name: Access-Control-Allow-Methods
+        value: "GET, POST, PUT, DELETE, OPTIONS"
+      - name: Access-Control-Allow-Headers
+        value: "Content-Type, Authorization"
+
   - type: web
     name: recipebook-backend
     runtime: node
@@ -19,6 +27,13 @@ services:
         value: $REACT_APP_ID
       - key: REACT_APP_KEY
         value: $REACT_APP_KEY
+    httpHeaders:
+      - name: Access-Control-Allow-Origin
+        value: "*"
+      - name: Access-Control-Allow-Methods
+        value: "GET, POST, PUT, DELETE, OPTIONS"
+      - name: Access-Control-Allow-Headers
+        value: "Content-Type, Authorization"
 databases:
   - name: recipebook-db
     plan: free
