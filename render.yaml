@@ -15,6 +15,8 @@ services:
         value: "GET, POST, PUT, DELETE, OPTIONS"
       - name: Access-Control-Allow-Headers
         value: "Content-Type, Authorization"
+    ports:
+      - port: 5173
 
   - type: web
     name: recipebook-backend
@@ -34,6 +36,8 @@ services:
         value: "GET, POST, PUT, DELETE, OPTIONS"
       - name: Access-Control-Allow-Headers
         value: "Content-Type, Authorization"
+    ports:
+      - port: 8080
 databases:
   - name: recipebook-db
     plan: free
