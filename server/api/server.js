@@ -12,9 +12,13 @@ const PORT = process.env.PORT || 8080;
 const corsOptions = {
   origin: [
     'http://localhost:5173',  // Your local development frontend
-    'https://recipebook-1-82qf.onrender.com' // Your deployed frontend
+    'https://recipebook-1-82qf.onrender.com',  // Your deployed frontend
+    'https://recipebook-frontend-y3dl.onrender.com',
+    'https://recipebook-backend-g6d9.onrender.com'  // Your backend URL
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
