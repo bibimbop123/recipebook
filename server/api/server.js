@@ -1,32 +1,33 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors";
-import fetch from "node-fetch"; // Add this line if you're using Node < 18
+import fetch from "node-fetch"; // Only needed for Node < 18
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Allowed frontend origins
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://recipebook-frontend-y3dl.onrender.com" // Replace with your real frontend URL if deployed
-];
+// Manually handle CORS
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    "http://localhost:5173",
+    "https://recipebook-frontend-y3dl.onrender.com"
+  ];
 
-// CORS middleware
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+  }
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 // Log request origin for debugging
 app.use((req, res, next) => {
