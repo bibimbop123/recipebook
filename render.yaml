@@ -20,6 +20,5 @@ services:
       - key: REACT_APP_KEY
         value: $REACT_APP_KEY
 databases:
-  - type: postgres
-    name: recipebook-db
+  - name: recipebook-db
     plan: free
