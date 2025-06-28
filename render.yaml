@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: recipebook-frontend
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: $RECIPEBOOK_API_URL
+    rootDirectory: .
+    port: 5173
+    healthCheckPath: /
+    healthCheckTimeout: 5000
+    healthCheckInterval: 5000
+    healthCheckRetries: 3
+    healthCheckStartTimeout: 30000
+
+  - type: web
+    name: recipebook-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node server/api/server.js
+    envVars:
+      - key: REACT_APP_ID
+        value: $REACT_APP_ID
+      - key: REACT_APP_KEY
+        value: $REACT_APP_KEY
+    rootDirectory: .
+    port: 8080
+    healthCheckPath: /api/recipes
+    healthCheckTimeout: 5000
+    healthCheckInterval: 5000
+    healthCheckRetries: 3
+    healthCheckStartTimeout: 30000
+
+databases:
+  - type: postgres
+    name: recipebook-db
+    envVars:
+      - key: DATABASE_URL
+        value: $DATABASE_URL
