@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors"; // you forgot to import this
 import fetch from "node-fetch"; // Only needed for Node < 18
 
 dotenv.config();
@@ -7,41 +8,35 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Manually handle CORS
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = [
-    "http://localhost:5173",
-    "https://recipebook-frontend-y3dl.onrender.com"
-  ];
+// ✅ CORS setup: allow specific origins
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://recipebook-frontend-y3dl.onrender.com"
+];
 
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-  }
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
-
-// Log request origin for debugging
-app.use((req, res, next) => {
-  console.log("Request Origin:", req.headers.origin);
-  next();
-});
-
+// ✅ Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Recipes endpoint
+// ✅ Recipes endpoint
 app.get("/api/recipes", async (req, res) => {
   try {
-    const { query, from, to } = req.query;
+    const { query, from = 0, to = 10 } = req.query;
     const response = await fetch(
       `https://api.edamam.com/search?q=${query}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}&from=${from}&to=${to}`
     );
@@ -58,7 +53,7 @@ app.get("/api/recipes", async (req, res) => {
   }
 });
 
-// Recipe by ID endpoint
+// ✅ Recipe by ID endpoint
 app.get("/api/recipes/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -78,13 +73,13 @@ app.get("/api/recipes/:id", async (req, res) => {
   }
 });
 
-// Error handler
+// ✅ Global error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
+  console.error("Unhandled error:", err.stack);
+  res.status(500).json({ error: "Something went wrong." });
 });
 
-// Start server
-app.listen(PORT, '0.0.0.0', () => {
+// ✅ Start server (Render compatibility)
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
