@@ -16,7 +16,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like curl or Postman)
     if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     } else {
@@ -29,30 +28,40 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// ✅ Preflight OPTIONS support
 app.options("*", cors());
 
 // ✅ Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Recipes endpoint
+// ✅ Health check
+app.get("/", (req, res) => {
+  res.send("✅ RecipeBook Backend is live!");
+});
+
+// ✅ Recipes endpoint with query check
 app.get("/api/recipes", async (req, res) => {
   try {
     const { query, from = 0, to = 10 } = req.query;
 
-    const response = await fetch(
-      `https://api.edamam.com/search?q=${query}&app_id=${process.env.EDAMAM_APP_ID}&app_key=${process.env.EDAMAM_API_KEY}&from=${from}&to=${to}`
-    );
+    if (!query) {
+      return res.status(400).json({ error: "Missing 'query' parameter" });
+    }
+
+    const edamamUrl = `https://api.edamam.com/search?q=${query}&app_id=${process.env.EDAMAM_APP_ID}&app_key=${process.env.EDAMAM_API_KEY}&from=${from}&to=${to}`;
+    console.log("🔎 Fetching from Edamam:", edamamUrl);
+
+    const response = await fetch(edamamUrl);
 
     if (!response.ok) {
+      console.error("❌ Edamam error:", response.statusText);
       return res.status(response.status).json({ error: "Failed to fetch recipes" });
     }
 
     const data = await response.json();
     res.status(200).json(data.hits);
   } catch (error) {
-    console.error("Error fetching recipes:", error);
+    console.error("🔥 Server error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
