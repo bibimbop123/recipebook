@@ -12,6 +12,7 @@
     "deploy": "npm run build && render deploy"
   },
   "dependencies": {
+    "vite": "^4.4.5",
     "axios": "^1.9.0",
     "bootstrap": "^5.3.2",
     "cors": "^2.8.5",
