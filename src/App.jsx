@@ -13,9 +13,9 @@ export default function App() {
   const [error, setError] = useState("");
   const perPage = 4;
 
-  const pageCount = Math.ceil(allRecipes.length / perPage);
   const offset = currentPage * perPage;
   const currentRecipes = allRecipes.slice(offset, offset + perPage);
+  const pageCount = Math.ceil(allRecipes.length / perPage);
 
   async function getRecipes() {
     if (!query.trim()) {
@@ -35,12 +35,18 @@ export default function App() {
         params: { query },
       });
 
-      setAllRecipes(response.data);
-      setCurrentPage(0);
+      if (!Array.isArray(response.data)) {
+        console.warn("⚠️ Unexpected API response:", response.data);
+        setError("Unexpected response format from server.");
+        return;
+      }
 
       if (response.data.length === 0) {
         setError("No recipes found. Try another ingredient.");
       }
+
+      setAllRecipes(response.data);
+      setCurrentPage(0);
     } catch (err) {
       console.error("❌ Error fetching recipes:", err);
       setError("Something went wrong. Please try again later.");
@@ -91,39 +97,48 @@ export default function App() {
 
       <div className="recipes">
         <Row>
-          {currentRecipes.map((recipeData, index) => {
-            const recipe = recipeData.recipe;
-            return (
-              <Col key={index} xs={12} sm={6} md={6} lg={3}>
-                <Card className="recipe-card">
-                  <Card.Img variant="top" src={recipe.image} />
-                  <Card.Body>
-                    <Card.Title>{recipe.label}</Card.Title>
-                    <Card.Text>Source: {recipe.source}</Card.Text>
-                    <Card.Text>
-                      Cuisine: {recipe.cuisineType?.join(", ") || "N/A"}
-                    </Card.Text>
-                    <Card.Text>
-                      Meal Type: {recipe.mealType?.join(", ") || "N/A"}
-                    </Card.Text>
-                    <Card.Text>Time: {recipe.totalTime} minutes</Card.Text>
-                    <Card.Text>Servings: {Math.round(recipe.yield)}</Card.Text>
-                    <Card.Text>Calories: {Math.round(recipe.calories)}</Card.Text>
-                    <Card.Text>
-                      <ul>
-                        {recipe.ingredients.map((ingredient, idx) => (
-                          <li key={idx}>{ingredient.text}</li>
-                        ))}
-                      </ul>
-                    </Card.Text>
-                    <a href={recipe.url} target="_blank" rel="noreferrer">
-                      View Recipe
-                    </a>
-                  </Card.Body>
-                </Card>
+          {Array.isArray(currentRecipes) && currentRecipes.length > 0 ? (
+            currentRecipes.map((recipeData, index) => {
+              const recipe = recipeData.recipe;
+              return (
+                <Col key={index} xs={12} sm={6} md={6} lg={3}>
+                  <Card className="recipe-card">
+                    <Card.Img variant="top" src={recipe.image} />
+                    <Card.Body>
+                      <Card.Title>{recipe.label}</Card.Title>
+                      <Card.Text>Source: {recipe.source}</Card.Text>
+                      <Card.Text>
+                        Cuisine: {recipe.cuisineType?.join(", ") || "N/A"}
+                      </Card.Text>
+                      <Card.Text>
+                        Meal Type: {recipe.mealType?.join(", ") || "N/A"}
+                      </Card.Text>
+                      <Card.Text>Time: {recipe.totalTime} minutes</Card.Text>
+                      <Card.Text>Servings: {Math.round(recipe.yield)}</Card.Text>
+                      <Card.Text>Calories: {Math.round(recipe.calories)}</Card.Text>
+                      <Card.Text>
+                        <ul>
+                          {recipe.ingredients.map((ingredient, idx) => (
+                            <li key={idx}>{ingredient.text}</li>
+                          ))}
+                        </ul>
+                      </Card.Text>
+                      <a href={recipe.url} target="_blank" rel="noreferrer">
+                        View Recipe
+                      </a>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })
+          ) : (
+            !loading &&
+            !error && (
+              <Col>
+                <p style={{ textAlign: "center" }}>No recipes to display yet.</p>
               </Col>
-            );
-          })}
+            )
+          )}
         </Row>
       </div>
 
