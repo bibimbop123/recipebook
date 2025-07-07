@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import fetch from "node-fetch"; // Only needed for Node < 18
+import fetch from "node-fetch";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -10,51 +10,41 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// 🔐 Absolute path helpers
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.join(__dirname, "../../dist");
+
 // ✅ Allow frontend origins
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://recipebook-frontend-y3dl.onrender.com", // old
-  "https://recipebook-backend-g6d9.onrender.com"   // current fullstack render URL
+  "http://localhost:8080",
+  "https://recipebook-backend-g6d9.onrender.com"
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      console.warn("❌ Blocked by CORS:", origin);
-      return callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+// ✅ Global CORS middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  console.log("🌐 Request origin:", origin);
 
-app.options("*", cors());
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin || "*");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") return res.sendStatus(200);
+    next();
+  } else {
+    console.warn("❌ Blocked by CORS:", origin);
+    res.status(403).json({ error: "Not allowed by CORS" });
+  }
+});
 
 // ✅ Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Serve static frontend from root /dist
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const distPath = path.join(__dirname, "../../dist");
-
-app.use(express.static(distPath));
-
-// ✅ Fallback for React Router (SPA)
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
-
-// ✅ Health check
-app.get("/health", (req, res) => {
-  res.send("✅ RecipeBook Backend is live!");
-});
-
-// ✅ Recipe search endpoint
+// ✅ Recipes endpoint
 app.get("/api/recipes", async (req, res) => {
   try {
     const { query, from = 0, to = 10 } = req.query;
@@ -100,6 +90,19 @@ app.get("/api/recipes/:id", async (req, res) => {
     console.error("❌ Error fetching recipe:", error);
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+// ✅ Health check
+app.get("/health", (req, res) => {
+  res.send("✅ RecipeBook Backend is live!");
+});
+
+// ✅ Serve static frontend after API routes
+app.use(express.static(distPath));
+
+// ✅ Fallback to React SPA
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
 });
 
 // ✅ Global error handler
