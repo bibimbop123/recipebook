@@ -6,11 +6,13 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm run start
     envVars:
-      - key: EDAMAM_APP_ID
-        value: $EDAMAM_APP_ID
-      - key: EDAMAM_API_KEY
-        value: $EDAMAM_API_KEY
       - key: NODE_ENV
         value: production
-    branch: main
+      - key: EDAMAM_APP_ID
+        value: your-edamam-id
+      - key: EDAMAM_API_KEY
+        value: your-edamam-key
+      - key: VITE_API_URL
+        value: https://recipebook-9dki.onrender.com
     autoDeploy: true
+    branch: main
