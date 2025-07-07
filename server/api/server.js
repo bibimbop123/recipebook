@@ -16,7 +16,7 @@ const distPath = path.join(__dirname, "../../dist");
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:8080",
-  "https://your-render-domain.onrender.com"
+  "https://recipebook-9dki.onrender.com"   // ✅ your actual deployed domain
 ];
 
 app.use((req, res, next) => {
