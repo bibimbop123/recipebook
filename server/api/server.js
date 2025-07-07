@@ -10,10 +10,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// ✅ CORS setup with specific origins
+// ✅ Allow frontend origins
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://recipebook-frontend-y3dl.onrender.com"
+  "https://recipebook-frontend-y3dl.onrender.com", // old
+  "https://recipebook-backend-g6d9.onrender.com"   // current fullstack render URL
 ];
 
 app.use(cors({
@@ -36,24 +37,24 @@ app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from the React app
+// ✅ Serve static frontend from root /dist
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const distPath = path.join(__dirname, "../../dist");
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../dist")));
-  
-  app.get("/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../dist", "index.html"));
-  });
-}
+app.use(express.static(distPath));
+
+// ✅ Fallback for React Router (SPA)
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
+});
 
 // ✅ Health check
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.send("✅ RecipeBook Backend is live!");
 });
 
-// ✅ Recipes endpoint with query check
+// ✅ Recipe search endpoint
 app.get("/api/recipes", async (req, res) => {
   try {
     const { query, from = 0, to = 10 } = req.query;
@@ -80,7 +81,7 @@ app.get("/api/recipes", async (req, res) => {
   }
 });
 
-// ✅ Recipe by ID endpoint
+// ✅ Fetch by recipe ID
 app.get("/api/recipes/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -96,7 +97,7 @@ app.get("/api/recipes/:id", async (req, res) => {
     const data = await response.json();
     res.status(200).json(data);
   } catch (error) {
-    console.error("Error fetching recipe:", error);
+    console.error("❌ Error fetching recipe:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -107,7 +108,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Something went wrong." });
 });
 
-// ✅ Start server (Render compatibility)
+// ✅ Start server for Render
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
