@@ -21,6 +21,8 @@ services:
         value: $EDAMAM_APP_ID
       - key: EDAMAM_API_KEY
         value: $EDAMAM_API_KEY
+      - key: VITE_API_URL
+        value: $VITE_API_URL
 databases:
   - name: recipebook-db
     plan: free

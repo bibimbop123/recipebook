@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import chef from "./assets/chef.gif";
 import axios from "axios";
@@ -6,38 +6,48 @@ import { Card, Row, Col } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
 
 export default function App() {
-  const [allRecipes, setAllRecipes] = useState([]);  // store all fetched recipes
+  const [allRecipes, setAllRecipes] = useState([]);
   const [query, setQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(0); // zero-based for ReactPaginate
+  const [currentPage, setCurrentPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const perPage = 4;
 
-  // Calculate total pages dynamically based on number of recipes
   const pageCount = Math.ceil(allRecipes.length / perPage);
-
-  useEffect(() => {
-    getRecipes();
-  }, []);
-
-  async function getRecipes() {
-    try {
-      const response = await axios.get("https://recipebook-1-82qf.onrender.com/api/recipes", {
-        params: {
-          query,
-        },
-      });
-
-      const { data } = response;
-
-      setAllRecipes(data);
-      setCurrentPage(0); // reset to first page on new fetch
-    } catch (error) {
-      console.log("Error fetching recipes:", error);
-    }
-  }
-
-  // Slice recipes to show only current page items
   const offset = currentPage * perPage;
   const currentRecipes = allRecipes.slice(offset, offset + perPage);
+
+  async function getRecipes() {
+    if (!query.trim()) {
+      setError("Please enter a valid search term.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setAllRecipes([]);
+
+    try {
+      const url = `${import.meta.env.VITE_API_URL}/api/recipes`;
+      console.log("🔎 Requesting:", url, "query:", query);
+
+      const response = await axios.get(url, {
+        params: { query },
+      });
+
+      setAllRecipes(response.data);
+      setCurrentPage(0);
+
+      if (response.data.length === 0) {
+        setError("No recipes found. Try another ingredient.");
+      }
+    } catch (err) {
+      console.error("❌ Error fetching recipes:", err);
+      setError("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function handlePageClick({ selected }) {
     setCurrentPage(selected);
@@ -50,7 +60,7 @@ export default function App() {
   return (
     <div className="App">
       <br />
-      <h1>Brian's Recipe Book </h1>
+      <h1>Brian's Recipe Book</h1>
       <br />
       <img
         className="chef"
@@ -59,8 +69,8 @@ export default function App() {
         style={{ animation: "pulse 2s infinite" }}
       />
       <br />
-      <br />
       <p>Search for recipes by ingredient</p>
+
       <input
         className="search-bar"
         type="text"
@@ -68,45 +78,52 @@ export default function App() {
         onChange={(e) => setQuery(e.target.value)}
       />
       <br />
-      <button className="search-button" onClick={handleSearch}>
-        Search
+      <button className="search-button" onClick={handleSearch} disabled={loading}>
+        {loading ? "Loading..." : "Search"}
       </button>
-      <br />
-      <h3> There are many free recipe sources not behind a paywall</h3>
-      <br />
-      <h4> BBC Good Food, Bon Appetit, All Recipes, Food Network, and more!</h4>
 
-      <h6>Privacy: A few sources require payment for access.</h6>
+      {error && <p className="error-message">{error}</p>}
+
       <br />
+      <h3>There are many free recipe sources not behind a paywall</h3>
+      <h4>BBC Good Food, Bon Appetit, All Recipes, Food Network, and more!</h4>
+      <h6>Privacy: A few sources require payment for access.</h6>
+
       <div className="recipes">
         <Row>
-          {currentRecipes &&
-            currentRecipes.map((recipe, index) => (
+          {currentRecipes.map((recipeData, index) => {
+            const recipe = recipeData.recipe;
+            return (
               <Col key={index} xs={12} sm={6} md={6} lg={3}>
                 <Card className="recipe-card">
-                  <Card.Img variant="top" src={recipe.recipe.image} />
+                  <Card.Img variant="top" src={recipe.image} />
                   <Card.Body>
-                    <Card.Title>{recipe.recipe.label}</Card.Title>
-                    <Card.Text>Source: {recipe.recipe.source} <br /></Card.Text>
-                    <Card.Text>Cuisine: {recipe.recipe.cuisineType}</Card.Text>
-                    <Card.Text>Meal Type: {recipe.recipe.mealType}</Card.Text>
-                    <Card.Text>Time: {recipe.recipe.totalTime} minutes</Card.Text>
-                    <Card.Text>Servings: {Math.round(recipe.recipe.yield)}</Card.Text>
-                    <Card.Text>Calories: {Math.round(recipe.recipe.calories)}</Card.Text>
+                    <Card.Title>{recipe.label}</Card.Title>
+                    <Card.Text>Source: {recipe.source}</Card.Text>
+                    <Card.Text>
+                      Cuisine: {recipe.cuisineType?.join(", ") || "N/A"}
+                    </Card.Text>
+                    <Card.Text>
+                      Meal Type: {recipe.mealType?.join(", ") || "N/A"}
+                    </Card.Text>
+                    <Card.Text>Time: {recipe.totalTime} minutes</Card.Text>
+                    <Card.Text>Servings: {Math.round(recipe.yield)}</Card.Text>
+                    <Card.Text>Calories: {Math.round(recipe.calories)}</Card.Text>
                     <Card.Text>
                       <ul>
-                        {recipe.recipe.ingredients.map((ingredient, idx) => (
+                        {recipe.ingredients.map((ingredient, idx) => (
                           <li key={idx}>{ingredient.text}</li>
                         ))}
                       </ul>
                     </Card.Text>
-                    <a href={recipe.recipe.url} target="_blank" rel="noreferrer">
+                    <a href={recipe.url} target="_blank" rel="noreferrer">
                       View Recipe
                     </a>
                   </Card.Body>
                 </Card>
               </Col>
-            ))}
+            );
+          })}
         </Row>
       </div>
 
