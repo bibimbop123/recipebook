@@ -9,10 +9,10 @@ services:
       - key: NODE_ENV
         value: production
       - key: EDAMAM_APP_ID
-        value: your-edamam-id
+        value: your-edamam-app-id
       - key: EDAMAM_API_KEY
-        value: your-edamam-key
+        value: your-edamam-api-key
       - key: VITE_API_URL
         value: https://recipebook-9dki.onrender.com
-    autoDeploy: true
     branch: main
+    autoDeploy: true

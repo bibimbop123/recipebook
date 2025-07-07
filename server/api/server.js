@@ -13,12 +13,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distPath = path.join(__dirname, "../../dist");
 
+// ✅ Allowlisted CORS origins
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:8080",
-  "https://recipebook-9dki.onrender.com"   // ✅ your actual deployed domain
+  "https://recipebook-9dki.onrender.com"
 ];
 
+// ✅ Custom CORS middleware
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (!origin || allowedOrigins.includes(origin)) {
@@ -30,7 +32,7 @@ app.use((req, res, next) => {
     next();
   } else {
     console.warn("❌ CORS blocked:", origin);
-    return res.status(403).json({ error: "CORS not allowed" });
+    res.status(403).json({ error: "Not allowed by CORS" });
   }
 });
 
@@ -53,12 +55,13 @@ app.get("/api/recipes", async (req, res) => {
   }
 });
 
-// ✅ Serve frontend
+// ✅ Serve built React app
 app.use(express.static(distPath));
 app.get("*", (req, res) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
 
+// ✅ Start server
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
