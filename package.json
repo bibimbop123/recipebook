@@ -9,8 +9,8 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "node server/api/server.js",
-    "deploy:frontend": "npm run build && render deploy --service-name=recipebook-frontend --build-command=\"npm run build\" --start-command=\"npm run preview\" --env-vars=\"VITE_API_URL=https://recipebook-1-82qf.onrender.com\""
-    },
+    "deploy": "npm run build && render deploy"
+  },
   "dependencies": {
     "axios": "^1.9.0",
     "bootstrap": "^5.3.2",

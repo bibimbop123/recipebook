@@ -1,28 +1,34 @@
 services:
   - type: web
-    name: recipebook-frontend
-    runtime: node
-    plan: free
-    buildCommand: npm install && npm run build
-    startCommand: serve -s dist -l 4173
-    envVars:
-      - key: VITE_API_URL
-        value: $RECIPEBOOK_API_URL
-
-
-  - type: web
-    name: recipebook-backend
-    runtime: node
-    plan: free
-    buildCommand: npm install
-    startCommand: node server/api/server.js
+    name: recipebook
+    env: node
+    buildCommand: npm run build
+    startCommand: npm run start
     envVars:
       - key: EDAMAM_APP_ID
         value: $EDAMAM_APP_ID
       - key: EDAMAM_API_KEY
         value: $EDAMAM_API_KEY
-      - key: VITE_API_URL
-        value: $VITE_API_URL
+      - key: NODE_ENV
+        value: production
+    buildImage: node:20
+    healthCheck:
+      path: /
+      interval: 30s
+      timeout: 5s
+      unhealthyThreshold: 3
+      healthyThreshold: 2
+    instanceCount: 1
+    instanceSize: free
+    port: 8080
+    diskSizeGb: 1
+    env: node
+    minReplicas: 1
+    maxReplicas: 3
+    autoDeploy: true
+    gitRepo: https://github.com/bibimbop123/recipebook.git
+    branch: main
+    rootDirectory: .
 databases:
   - name: recipebook-db
     plan: free
