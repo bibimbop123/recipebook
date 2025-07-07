@@ -12,10 +12,5 @@ services:
         value: $EDAMAM_API_KEY
       - key: NODE_ENV
         value: production
-    healthCheckPath: /
-    autoDeploy: true
     branch: main
-
-databases:
-  - name: recipebook-db
-    plan: free
+    autoDeploy: true

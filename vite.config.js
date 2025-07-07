@@ -1,28 +1,14 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    cors: true,
-    proxy: {
-      '/api': 'https://recipebook-ldja.onrender.com',
-    },
-  },
   build: {
-    outDir: "dist", // Ensure the build output directory is correct
+    outDir: "dist"
   },
   resolve: {
     alias: {
-      "@": "/src", // Alias for cleaner imports
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "@/styles/variables.scss";`, // SCSS global variables
-      },
-    },
-  },
+      "@": "/src"
+    }
+  }
 });
