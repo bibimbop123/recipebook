@@ -39,19 +39,43 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ API route
+// ✅ API route with enhanced logging and error handling
 app.get("/api/recipes", async (req, res) => {
   const { query, from = 0, to = 10 } = req.query;
-  if (!query) return res.status(400).json({ error: "Missing 'query'" });
+
+  if (!query) {
+    return res.status(400).json({ error: "Missing 'query'" });
+  }
 
   const url = `https://api.edamam.com/search?q=${query}&app_id=${process.env.EDAMAM_APP_ID}&app_key=${process.env.EDAMAM_API_KEY}&from=${from}&to=${to}`;
+
   try {
+    console.log("🔎 Fetching from Edamam:", url);
+
     const response = await fetch(url);
-    const data = await response.json();
-    res.status(200).json(data.hits);
+    const status = response.status;
+    const contentType = response.headers.get("content-type") || "";
+
+    console.log("📡 Edamam response status:", status);
+    console.log("📦 Content-Type:", contentType);
+
+    const text = await response.text();
+    console.log("📄 Edamam raw response (first 300 chars):", text.slice(0, 300));
+
+    if (!response.ok) {
+      return res.status(status).json({ error: `Edamam API error: ${status}` });
+    }
+
+    if (contentType.includes("application/json")) {
+      const data = JSON.parse(text);
+      return res.status(200).json(data.hits || []);
+    } else {
+      console.error("❌ Unexpected content type:", contentType);
+      return res.status(502).json({ error: "Unexpected response format from Edamam" });
+    }
   } catch (err) {
-    console.error("Fetch error:", err);
-    res.status(500).json({ error: "Failed to fetch recipes" });
+    console.error("🔥 Fetch or parse error:", err.message || err);
+    res.status(500).json({ error: "Internal server error while fetching recipes" });
   }
 });
 
