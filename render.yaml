@@ -1,26 +1,26 @@
 services:
   - type: web
-    name: recipebook-frontend
-    env: node
-    plan: free
-    buildCommand: npm install && npm run build
-    startCommand: npm run preview
-    rootDir: src/
-    envVars:
-      - key: VITE_API_URL
-        value: https://recipebook-backend-xxxx.onrender.com # Replace after backend deploy
-
-  - type: web
     name: recipebook-backend
     env: node
-    plan: free
+    rootDir: server/api
     buildCommand: npm install
     startCommand: node server.js
-    rootDir: server
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: EDAMAM_APP_ID
-        value: your-edamam-app-id
+        value: $EDAMAM_APP_ID
       - key: EDAMAM_API_KEY
-        value: your-edamam-api-key
+        value: $EDAMAM_API_KEY
+      - key: VITE_API_KEY
+        value: $VITE_API_KEY
+      - key: PORT
+        value: 8080
+
+  - type: web
+    name: recipebook-frontend
+    env: node
+    rootDir: .
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: https://recipebook-backend-g6d9.onrender.com

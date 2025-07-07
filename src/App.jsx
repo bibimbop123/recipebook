@@ -16,6 +16,7 @@ export default function App() {
   const offset = currentPage * perPage;
   const currentRecipes = allRecipes.slice(offset, offset + perPage);
   const pageCount = Math.ceil(allRecipes.length / perPage);
+  const BASE_URL = "https://recipebook-jvvm.onrender.com/";
 
   async function getRecipes() {
     if (!query.trim()) {
@@ -28,7 +29,7 @@ export default function App() {
     setAllRecipes([]);
 
     try {
-      const url = `${import.meta.env.VITE_API_URL}/api/recipes`;
+      const url = `${BASE_URL}/api/recipes`;
       console.log("🔎 Requesting:", url, "query:", query);
 
       const response = await axios.get(url, {
