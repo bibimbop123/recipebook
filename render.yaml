@@ -17,10 +17,10 @@ services:
     buildCommand: npm install
     startCommand: node server/api/server.js
     envVars:
-      - key: REACT_APP_ID
-        value: $REACT_APP_ID
-      - key: REACT_APP_KEY
-        value: $REACT_APP_KEY
+      - key: EDAMAM_APP_ID
+        value: $EDAMAM_APP_ID
+      - key: EDAMAM_API_KEY
+        value: $EDAMAM_API_KEY
 databases:
   - name: recipebook-db
     plan: free

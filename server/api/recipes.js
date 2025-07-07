@@ -9,7 +9,7 @@ import fetch from "node-fetch";
 router.get("/", async (req, res) => {
   const { query, from, to } = req.query;
   const response = await axios.get(
-    `https://api.edamam.com/api/recipes/v2?type=public&q=${query}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}&from=${from}&to=${to}`
+    `https://api.edamam.com/api/recipes/v2?type=public&q=${query}&app_id=${process.env.EDAMAM_APP_ID}&app_key=${process.env.EDAMAM_API_KEY}&from=${from}&to=${to}`
   );
   const { hits } = response.data;
   console.log("hits", hits);

@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors"; // you forgot to import this
+import cors from "cors";
 import fetch from "node-fetch"; // Only needed for Node < 18
 
 dotenv.config();
@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// ✅ CORS setup: allow specific origins
+// ✅ CORS setup with specific origins
 const allowedOrigins = [
   "http://localhost:5173",
   "https://recipebook-frontend-y3dl.onrender.com"
@@ -16,11 +16,11 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (like curl or Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     } else {
+      console.warn("❌ Blocked by CORS:", origin);
       return callback(new Error("Not allowed by CORS"));
     }
   },
@@ -28,6 +28,9 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// ✅ Preflight OPTIONS support
+app.options("*", cors());
 
 // ✅ Body parsing
 app.use(express.json());
@@ -37,8 +40,9 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/api/recipes", async (req, res) => {
   try {
     const { query, from = 0, to = 10 } = req.query;
+
     const response = await fetch(
-      `https://api.edamam.com/search?q=${query}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}&from=${from}&to=${to}`
+      `https://api.edamam.com/search?q=${query}&app_id=${process.env.EDAMAM_APP_ID}&app_key=${process.env.EDAMAM_API_KEY}&from=${from}&to=${to}`
     );
 
     if (!response.ok) {
@@ -57,8 +61,9 @@ app.get("/api/recipes", async (req, res) => {
 app.get("/api/recipes/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
     const response = await fetch(
-      `https://api.edamam.com/search?r=${id}&app_id=${process.env.REACT_APP_ID}&app_key=${process.env.REACT_APP_KEY}`
+      `https://api.edamam.com/search?r=${id}&app_id=${process.env.EDAMAM_APP_ID}&app_key=${process.env.EDAMAM_API_KEY}`
     );
 
     if (!response.ok) {
@@ -81,5 +86,5 @@ app.use((err, req, res, next) => {
 
 // ✅ Start server (Render compatibility)
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
