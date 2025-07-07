@@ -22,7 +22,6 @@ services:
     instanceSize: free
     port: 8080
     diskSizeGb: 1
-    env: node
     minReplicas: 1
     maxReplicas: 3
     autoDeploy: true
