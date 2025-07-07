@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     cors: true,
     proxy: {
-      '/api': 'https://recipebook-1-82qf.onrender.com/',
+      '/api': 'https://recipebook-ldja.onrender.com',
     },
   },
   build: {
