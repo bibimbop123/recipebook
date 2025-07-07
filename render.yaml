@@ -5,7 +5,7 @@ services:
     plan: free
     buildCommand: npm install && npm run build
     startCommand: npm run preview
-    rootDir: client
+    rootDir: src
     envVars:
       - key: VITE_API_URL
         value: https://recipebook-backend-xxxx.onrender.com # Replace after backend deploy
