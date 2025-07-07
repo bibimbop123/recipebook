@@ -2,7 +2,8 @@ services:
   - type: web
     name: recipebook
     env: node
-    buildCommand: npm run build
+    plan: free
+    buildCommand: npm install && npm run build
     startCommand: npm run start
     envVars:
       - key: EDAMAM_APP_ID
@@ -11,23 +12,10 @@ services:
         value: $EDAMAM_API_KEY
       - key: NODE_ENV
         value: production
-    buildImage: node:20
-    healthCheck:
-      path: /
-      interval: 30s
-      timeout: 5s
-      unhealthyThreshold: 3
-      healthyThreshold: 2
-    instanceCount: 1
-    instanceSize: free
-    port: 8080
-    diskSizeGb: 1
-    minReplicas: 1
-    maxReplicas: 3
+    healthCheckPath: /
     autoDeploy: true
-    gitRepo: https://github.com/bibimbop123/recipebook.git
     branch: main
-    rootDirectory: .
+
 databases:
   - name: recipebook-db
     plan: free
