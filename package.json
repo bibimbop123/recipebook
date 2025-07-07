@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "concurrently \"nodemon server/api/server.js\" \"vite\"",
-    "build": "npm install && npm run build",
+    "build": "npm install",
     "start": "node server/api/server.js"
   },
   "dependencies": {
