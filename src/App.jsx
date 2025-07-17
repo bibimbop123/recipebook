@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import chef from "./assets/chef.gif";
+import chef from "/public/chef.gif";
 import axios from "axios";
 import { Card, Row, Col } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
