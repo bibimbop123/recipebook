@@ -16,6 +16,7 @@ export default function App() {
   const offset = currentPage * perPage;
   const currentRecipes = allRecipes.slice(offset, offset + perPage);
   const pageCount = Math.ceil(allRecipes.length / perPage);
+  const BASE_URL = "https://recipebook-jvvm.onrender.com/";
 
   async function getRecipes() {
     if (!query.trim()) {
