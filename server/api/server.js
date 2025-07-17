@@ -22,6 +22,8 @@ const distPath = path.join(__dirname, "../../dist");
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:8080",
+  "https://recipebook-frontend-m4pz.onrender.com",
+  "https://recipebook-backend-csew.onrender.com"
 ];
 
 // ✅ Custom CORS middleware
