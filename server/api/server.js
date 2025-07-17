@@ -61,7 +61,11 @@ app.get("/api/recipes", async (req, res) => {
   const apiUrl = `https://api.edamam.com/api/recipes/v2?type=public&q=${encodeURIComponent(query)}&app_id=${process.env.EDAMAM_APP_ID}&app_key=${process.env.EDAMAM_API_KEY}&from=${from}&to=${to}`;
 
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl, {
+      headers: {
+        "Edamam-Account-User": process.env.EDAMAM_USER_ID || "chef-boyardee"
+      }
+    });
 
     // Check if response is JSON before parsing
     const contentType = response.headers.get("content-type");
