@@ -9,6 +9,7 @@ services:
       - key: EDAMAM_APP_ID
         value: $EDAMAM_APP_ID
       - key: EDAMAM_API_KEY
+
         value: $EDAMAM_API_KEY
       - key: VITE_API_KEY
         value: $VITE_API_KEY
@@ -24,3 +25,4 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://recipebook-backend-g6d9.onrender.com
+
