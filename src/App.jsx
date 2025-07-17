@@ -28,7 +28,7 @@ export default function App() {
     setAllRecipes([]);
 
     try {
-      const url = `${import.meta.env.VITE_API_URL}/api/recipes`;
+      const url = `http://localhost:8080/api/recipes`;
       console.log("🔎 Requesting:", url, "query:", query);
 
       const response = await axios.get(url, {
