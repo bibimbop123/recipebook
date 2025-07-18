@@ -29,7 +29,7 @@ export default function App() {
     setAllRecipes([]);
 
     try {
-      const url = `http://localhost:8080/api/recipes`;
+      const url = `${BASE_URL}/api/recipes`;
       console.log("🔎 Requesting:", url, "query:", query);
 
       const response = await axios.get(url, {
