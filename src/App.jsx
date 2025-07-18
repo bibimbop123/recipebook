@@ -16,7 +16,7 @@ export default function App() {
   const offset = currentPage * perPage;
   const currentRecipes = allRecipes.slice(offset, offset + perPage);
   const pageCount = Math.ceil(allRecipes.length / perPage);
-  const BASE_URL = "https://recipebook-jvvm.onrender.com/";
+  const BASE_URL = "https://recipebook-jvvm.onrender.com";
 
   async function getRecipes() {
     if (!query.trim()) {
@@ -29,7 +29,8 @@ export default function App() {
     setAllRecipes([]);
 
     try {
-      const url = `${BASE_URL}/api/recipes`;
+      // Ensure no double slash in the URL
+      const url = `${BASE_URL.replace(/\/$/, "")}/api/recipes`;
       console.log("🔎 Requesting:", url, "query:", query);
 
       const response = await axios.get(url, {
@@ -55,7 +56,6 @@ export default function App() {
       setLoading(false);
     }
   }
-
   function handlePageClick({ selected }) {
     setCurrentPage(selected);
   }

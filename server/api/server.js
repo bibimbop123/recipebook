@@ -21,30 +21,14 @@ const distPath = path.join(__dirname, "../../dist");
 // ✅ Allowlisted CORS origins
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://localhost:8080",
-  "https://recipebook-frontend-m4pz.onrender.com",
-  "https://recipebook-backend-csew.onrender.com"
+  "https://recipebook-frontend-m4pz.onrender.com"
 ];
 
-// ✅ Custom CORS middleware
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (!origin || allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin || "*");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
-
-    if (req.method === "OPTIONS") {
-      return res.sendStatus(200);
-    }
-
-    next();
-  } else {
-    console.warn("❌ CORS blocked:", origin);
-    return res.status(403).json({ error: "Not allowed by CORS" });
-  }
-});
+// ✅ Use only the cors package for CORS handling
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 // ✅ Middleware
 app.use(express.json());
