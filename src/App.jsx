@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import chef from "/public/chef.gif";
+import chef from "./assets/chef.gif"; // Ensure this path is correct
 import axios from "axios";
 import { Card, Row, Col } from "react-bootstrap";
 import ReactPaginate from "react-paginate";
@@ -16,7 +16,7 @@ export default function App() {
   const offset = currentPage * perPage;
   const currentRecipes = allRecipes.slice(offset, offset + perPage);
   const pageCount = Math.ceil(allRecipes.length / perPage);
-  const BASE_URL = "https://recipebook-jvvm.onrender.com";
+  const BASE_URL = "https://recipebook-frontend-m4pz.onrender.com";
 
   async function getRecipes() {
     if (!query.trim()) {
